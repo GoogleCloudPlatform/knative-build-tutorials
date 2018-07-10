@@ -143,7 +143,7 @@ kubectl create secret generic knative-build-auth --type="kubernetes.io/basic-aut
 ```
 
 To tell the Build to use those parameters when pushing to `gcr.io`, we
-need to add an annotation to the secret. That's called [Guided credential selection](https://github.com/knative/build/blob/master/docs/auth.md#guiding-credential-selection).
+need to add an annotation to the secret. That's called [Guided credential selection](https://github.com/knative/docs/blob/master/build/auth.md#guiding-credential-selection).
 
 ```bash
 kubectl annotate secret knative-build-auth build.knative.dev/docker-0=https://gcr.io
@@ -208,7 +208,7 @@ Now that you became familiar with expressing Docker builds, you will
 want to avoid copy/pasting the same boilerplate yaml each time a new
 image needs to be built.
 
-[Build Templates](https://github.com/knative/build/blob/master/docs/build-templates.md)
+[Build Templates](https://github.com/knative/docs/blob/master/build/build-templates.md)
 solve that problem by extracting the common yaml to a shared parameterized template.
 
 ### Create a Build Template
