@@ -1,4 +1,4 @@
-# Copyright 2018 The Knative Authors
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,6 @@ spec:
     default: Dockerfile
   steps:
   - name: build-and-push
-    image: gcr.io/kaniko-project/executor:v0.1.0
+    image: gcr.io/kaniko-project/executor:v0.2.0
     args: ["--dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}",
            "--destination=${IMAGE}"]

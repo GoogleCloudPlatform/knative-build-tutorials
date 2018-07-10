@@ -12,16 +12,16 @@ Think of it as a building block to facilitate the expression of Builds as part o
 
 Learn how to install Knative Build, run a simple Build and inspect its result.
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2Fdgageot%2Fknative-build-tutorials&page=editor&tutorial=getting-started/README.md&open_in_editor=.)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleContainerTools%2Fknative-build-tutorials&page=editor&tutorial=getting-started/README.md&open_in_editor=.)
 
 ## Docker Build with Kaniko
 
 Learn how to build a Docker image from a Dockerfile, using [Kaniko](https://github.com/GoogleContainerTools/kaniko).
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2Fdgageot%2Fknative-build-tutorials&page=editor&tutorial=docker-build/README.md&open_in_editor=.)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleContainerTools%2Fknative-build-tutorials&page=editor&tutorial=docker-build/README.md&open_in_editor=.)
 
 ## Spring Boot Java application with Jib
 
 Learn how to build a Spring Boot application without Docker, using [Jib](https://github.com/GoogleContainerTools/jib).
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2Fdgageot%2Fknative-build-tutorials&page=editor&tutorial=spring-boot/README.md&open_in_editor=.)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleContainerTools%2Fknative-build-tutorials&page=editor&tutorial=spring-boot/README.md&open_in_editor=.)
