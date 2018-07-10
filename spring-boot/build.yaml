@@ -25,4 +25,6 @@ spec:
   steps:
   - name: build-and-push
     image: dgageot/jib@sha256:a98d9adace11285b2344b588407cc25ac57a0ab6b55a4534b2ac97f0b0ed8609
-    args: ["compile", "jib:build"]
+    # image: gcr.io/cloud-builders/mvn
+    # image: dgageot/jib-image
+    args: ["compile", "jib:build", "-Dimage=gcr.io/dga-demo/hello-jib"]

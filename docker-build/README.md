@@ -1,19 +1,23 @@
-# Knative Build
+# Knative Build - Docker build
 
 The previous tutorial taught you how to setup Knative Build. You ran a simple Build
 that prints "Hello, World!". Let's try a more concrete example.
 
-**A docker build**
+## Building a Docker image
 
-This new tutorial, will teach you how to build and push a Docker image described with a Dockerfile.
+This new tutorial, will teach you how to build and push a Docker image described with a **Dockerfile**.
 The application will be a simple website running with [nginx](https://www.nginx.com/).
 
-Docker builds are known to be complicated on a shared cluster because it usually involve
+Docker builds are known to be complicated on a shared cluster because it usually involves
 mounting the Docker socket to be able to let the Docker Daemon build the images.
 
-**With Knative Build**
+**Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
 
-Here's the Kubernetes <walkthrough-editor-open-file filePath="build-crd/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
+**Are you ready?** Then click the `Continue` button to move to get started.
+
+## Docker build with Knative Build
+
+Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
@@ -121,7 +125,7 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} --member serviceAccount:kna
 gcloud iam service-accounts keys create knative-key.json --iam-account knative-build@${PROJECT_ID}.iam.gserviceaccount.com
 ```
 
-This creates a <walkthrough-editor-open-file filePath="build-crd/docker-build/knative-key.json">knative-key.json</walkthrough-editor-open-file> file on your drive.
+This creates a <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/knative-key.json">knative-key.json</walkthrough-editor-open-file> file on your drive.
 
 **You are almost there!** You completed the Google Cloud part.
 
@@ -173,7 +177,7 @@ secrets:
 
 OK, we've got everything configured to let the Build publish images after they are built.
 
-One last step is to edit <walkthrough-editor-open-file filePath="build-crd/docker-build/build.yaml">docker-build/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
+One last step is to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build.yaml">docker-build/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
 by your project name. This way, the build will push the image inc
 the Google Container Registry linked to your project.
 
@@ -267,7 +271,7 @@ spec:
 ```
 
 *Warning: don't forget to replace `[PROJECT-NAME]` with you actual
-project name in <walkthrough-editor-open-file filePath="build-crd/docker-build/build-hello.yaml"></walkthrough-editor-open-file>
+project name in <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build-hello.yaml"></walkthrough-editor-open-file>
 
 ```bash
 kubectl apply -f docker-build/build-hello.yaml
@@ -286,14 +290,14 @@ user now!
 
 [![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2Fdgageot%2Fknative-build-tutorials&page=editor&tutorial=spring-boot/README.md&open_in_editor=.)
 
----------------
+<walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache
 License, Version 2.0 (the "License"); you may not use this file except in
 compliance with the License. You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-
+http://www.apache.org/licenses/LICENSE-2.0.
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
+</walkthrough-footnote>

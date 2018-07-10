@@ -1,9 +1,9 @@
-# Knative Build
+# Knative Build - Java application
 
 The previous tutorial taught you how to build a Docker image from a Dockerfile,
 using Knative Build.
 
-**Build a Docker image without Docker**
+## Build a Docker image without Docker
 
 Let's try something different and build a Java Spring Boot web application, without using
 Docker. It should still produce a Docker image at the end, though.
@@ -11,7 +11,13 @@ Docker. It should still produce a Docker image at the end, though.
 To achieve that goal, we are going to use Knative Build with [Jib](https://github.com/GoogleContainerTools/jib),
 another open-source project from Google.
 
-Here's the Kubernetes <walkthrough-editor-open-file filePath="build-crd/spring-boot/build.yaml">yaml manifest</walkthrough-editor-open-file>
+**Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
+
+**Are you ready?** Then click the `Continue` button to move to get started.
+
+## Docker-less build with Knative Build
+
+Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">yaml manifest</walkthrough-editor-open-file>
 to express such a build:
 
 ```yaml
@@ -196,14 +202,14 @@ was downloaded from Maven Central!
 Congratulations! You've used a cache to make your builds much faster. You are an expert
 user now!
 
----------------
+<walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache
 License, Version 2.0 (the "License"); you may not use this file except in
 compliance with the License. You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-
+http://www.apache.org/licenses/LICENSE-2.0.
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
+</walkthrough-footnote>

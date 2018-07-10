@@ -1,10 +1,8 @@
-# Knative Build
+# Knative Build - Getting started
 
-## Welcome to the "Knative Build" tutorial!
+Welcome! This tutorial will help you get started with "Knative Build" extension to Kubernetes.
 
-This tutorial will help you get started with "Knative Build" extension to Kubernetes.
-
-### What is Knative Build?
+## What is Knative Build?
 
 It's an [open-source project](https://github.com/knative/build) that provides an implementation
 of the Build [CRD](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
@@ -13,19 +11,20 @@ that runs Builds on-cluster.
 It's not a complete standalone product that could be used for CI/CD.
 Think of it as a building block to facilitate the expression of Builds as part of larger systems.
 
-### What am I going to learn?
+**What am I going to learn?**
 
-You'll learn how to install it and start using it with sinple build descriptions.
+You'll learn how to install it and start using it with simple build descriptions.
 
 You'll also learn a bit how it works underneath.
 
-**Time to complete:** TODO
+**Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
 
-**Are you ready?** Then click the `Continue` button to move to the next step.
+**Are you ready?** Then click the `Continue` button to get started...
 
 ## Setup
 
-*Those instructions assume you have a Kubernetes cluster and `kubectl` pointing at it.*
+*Warning: Those instructions assume you have a Kubernetes cluster and `kubectl` pointing at it.
+They also assume you have basic knowledge of Kubernetes and its CLI.*
 
 One way to check is to run:
 
@@ -34,12 +33,11 @@ kubectl get nodes
 ```
 
 If you don't have any Kubernetes cluster, follow [this guide](https://cloud.google.com/kubernetes-engine/docs/quickstart)
-to create one with Google Kubernetes Engine, from Cloud Shell.
+to create one with [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/).
 
+**Configure permissions**
 
-### Configure permissions
-
-Before knative is installed, we need to grant `cluster-admin` permissions to the current user:
+Before Knative Build is installed, we need to grant `cluster-admin` permissions to the current user:
 
 ```bash
 kubectl create clusterrolebinding cluster-admin-binding \
@@ -47,7 +45,7 @@ kubectl create clusterrolebinding cluster-admin-binding \
   --user=$(gcloud config get-value core/account)
 ```
 
-### Install Knative Build
+**Install Knative Build**
 
 Next, we install the latest version of [Knative Build](https://github.com/knative/serving):
 
@@ -55,10 +53,12 @@ Next, we install the latest version of [Knative Build](https://github.com/knativ
 kubectl apply -f https://storage.googleapis.com/build-crd/latest/release.yaml
 ```
 
-From now one, you should be good to go.
+From now one, you should be good to go!
 
-**But let's check that everything was installed correctly. That'll also help you understand what new components are running on the cluster,
-now.**
+But let's check that everything was installed correctly. That'll also help you understand which
+new components have been installed on the cluster.
+
+**Click the `Continue` button to go to next step...**
 
 ## Verify the installation
 
@@ -91,14 +91,14 @@ kubectl get build
 
 It should display `No resources found.` for now.
 
-**You are ready to run your first Build!**
+**You are ready to run your first Build!** Click the `Continue` button.
 
 ## Hello, World!
 
 Let's start simple with a Build that has no input and produces no artifact.
 All it does is print "Hello, World!". It's enough to learn the basics!
 
-Here's the Kubernetes <walkthrough-editor-open-file filePath="build-crd/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
+Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
@@ -113,16 +113,16 @@ spec:
 
 See, that's easy!
 
-### The `Build` type
+**The `Build` type**
 
 You can see that Kubernetes was extended with a new type of resource: the `Build`.
-A Build is a made of steps that run in sequence and share a common Workspace.
+A Build is made of steps that run in sequence and share a common directory called the `workspace`.
 
 Each step is a docker image that runs with the given arguments.
 
-Our sample has only one step. It uses the `busybox` image to run `echo Hello, World!`.
+Our sample has only one step which uses the `busybox` image to run `echo Hello, World!`.
 
-### Let's start the build
+**Let's start the build**
 
 ```bash
 kubectl apply -f getting-started/build.yaml
@@ -134,7 +134,7 @@ The build is running.
 kubectl get builds
 ```
 
-**Congratulations! You've had your first build running with Knative Build.**
+**Congratulations! You've had your started your first build with Knative Build.**
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
@@ -190,12 +190,12 @@ status:
   stepStates: null
 ```
 
-**The interesting information to read are:**
+**The interesting information are:**
 
  + The status of the build: **`Succeeded`**
  + The name of the pod that actually ran the job: **`hello-klsqq`**
 
-The build is described in a `Build` object but its steps actually ran in a standard `pod`.
+The build is described in a `Build` object but its steps actually ran in a standard Kubernetes `pod`.
 
 **Continue to next step to inspect the pod...**
 
@@ -209,9 +209,7 @@ It'll give you the full description of the pod.
 
 **That's a lot of information!**
 
-Some interesting information to read are:
-
-The list of containers (think steps) that are run:
+The main information is the list of containers (think steps) that are run:
 
 ```yaml
 initContainers:
@@ -260,7 +258,7 @@ initContainers:
   workingDir: /workspace
 ```
 
-*Tip: look for the `image` keyword to understand which containers ran.*
+*Pro Tip: look for the `image` keyword to find the containers.*
 
 **Build steps run in containers:**
 
@@ -271,9 +269,9 @@ We can see that the pod ran two [Init Containers](https://kubernetes.io/docs/con
 
 **Build steps share a common workspace**
 
-Containers all share the same two mounts:
+Containers all share the same two volumes:
 
- + `/builder/home` - the home folder for all containers where shared configuration is typically installed
+ + `/builder/home` - the home folder for all containers where shared configuration is typically installed.
  + `/workspace` - a shared folder where to read inputs from and where to write outputs of each step.
 
 **Continue to next step to get the Build's status...**
@@ -311,13 +309,14 @@ initContainerStatuses:
       reason: Completed
       startedAt: 2018-07-06T11:51:09Z
 phase: Succeeded
+
 ```
 
 That's useful to understand if the build went well or not.
 
 **Let's see the logs**
 
-More than the status of each step, what you want, as a user, are the logs output.
+More than the status of each step, what you want, as a user, is the logs output.
 It's possible to read the logs for each step with the usual `kubectl logs` command.
 
 For example:
@@ -331,12 +330,12 @@ It should show `Hello, World!`
 **I see no logs!**
 
 *Sometimes, Kubernetes deletes the logs for a Build that's terminated. It makes sense in the Kubernetes world.
-Not so much in the user world!. Remember that Knative Build is a building block meant to be used in bigger solutions
-built on top of it. In this kind of solution, logs would typically be aggregated and published somewhere else.*
+Not so much in the user world!. Remember that Knative Build is a building block meant to be used in larger systems.
+In this kind of system, logs would typically be aggregated and published somewhere else.*
 
-**Continue to next step to improve the build description...**
+**Continue to next step to improve the logs...**
 
-## Let's improve the hello world
+## Let's improve the Hello, World!
 
 First, we are going to install a CLI utility to read a build's logs. This will be much easier than running
 lots of `kubectl` commands!
@@ -349,13 +348,18 @@ go get -u github.com/knative/build/cmd/logs
 logs hello
 ```
 
-**Build steps can have names**
+That's so much easier!
+
+**Continue to next step to improve the build...**
+
+## Build steps can have names
 
 When build steps are not given names, they get an auto-generated name such as `build-step-X`.
 Naming build steps will give us a more meaningful output in logs.
 
-Let's give a name to our build's unique step. Why not name it `hello-world`?
+Let's give a name to the build's unique step. Why not name it `hello-world`?
 
+Open the <walkthrough-editor-open-file filePath="knative-build-tutorials/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> and use this content:
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
 kind: Build
@@ -368,7 +372,7 @@ spec:
     args: ['echo', 'Hello, World!']
 ```
 
-We can now delete the previous build...
+We have to delete the previous build...
 
 ```bash
 kubectl delete build hello
@@ -394,14 +398,14 @@ logs hello
 
 [![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2Fdgageot%2Fknative-build-tutorials&page=editor&tutorial=docker-build/README.md&open_in_editor=.)
 
----------------
+<walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache
 License, Version 2.0 (the "License"); you may not use this file except in
 compliance with the License. You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-
+http://www.apache.org/licenses/LICENSE-2.0.
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
+</walkthrough-footnote>

@@ -25,4 +25,4 @@ spec:
   - name: build-and-push
     image: gcr.io/kaniko-project/executor:v0.1.0
     args: ["--dockerfile=/workspace/Dockerfile",
-           "--destination=gcr.io/dga-demo/hello-nginx"]
+           "--destination=gcr.io/[PROJECT-NAME]/hello-nginx"]
