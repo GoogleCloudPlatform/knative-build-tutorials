@@ -1,3 +1,5 @@
+<walkthrough-author name="David Gageot" repositoryUrl="https://github.com/GoogleContainerTools/knative-build-tutorials" email="dgageot@google.com" tutorialName="knative-build-docker-build"></walkthrough-author>
+
 # Knative Build - Docker build
 
 The previous tutorial taught you how to setup Knative Build on a Kubernetes cluster. You ran a simple Build

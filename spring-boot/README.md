@@ -1,3 +1,5 @@
+<walkthrough-author name="David Gageot" repositoryUrl="https://github.com/GoogleContainerTools/knative-build-tutorials" email="dgageot@google.com" tutorialName="knative-build-spring-boot"></walkthrough-author>
+
 # Knative Build - Java application
 
 The previous tutorial taught you how to build a Docker image from a Dockerfile,
