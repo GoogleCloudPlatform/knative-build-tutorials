@@ -5,17 +5,20 @@ using Knative Build.
 
 ## Build a Docker image without Docker
 
-Let's try something different and build a Java Spring Boot web application, without using
-Docker. It should still produce a Docker image at the end, though.
+Let's try something different and build a Java Spring Boot web application,
+without using Docker. It should still produce a Docker image at the end, though.
 
 To achieve that goal, we are going to use Knative Build with [Jib](https://github.com/GoogleContainerTools/jib),
 another open-source project from Google.
 
+Jib is a maven and gradle plugin that knows how to produce a Docker image
+from Java sources. It's easy to use it as a Knative Build step.
+
 **Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
 
-**Are you ready?** Then click the `Continue` button to move to get started.
+**Are you ready?** Then click the `Continue` button to get started.
 
-## Docker-less build with Knative Build
+## Use Jib with Knative Build
 
 Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">yaml manifest</walkthrough-editor-open-file>
 to express such a build:
@@ -40,7 +43,7 @@ spec:
 
 ### Git source
 
-Like for the previous example, the build takes a git repository as an input.
+Like for the previous tutorial, the build takes a git repository as an input.
 
 ```yaml
 source:
@@ -49,26 +52,31 @@ source:
     revision: master
 ```
 
-### Jib
+### Maven
 
-This time, we are using Jib to do the actual build.
+This time, we are using [Maven](https://maven.apache.org/) to do the actual build.
+We use the `gcr.io/cloud-builders/mvn` image that is one of the Google
+[curated images](https://github.com/GoogleCloudPlatform/cloud-builders).
 
-*Pro tip: we use the fully qualified name of the jib docker image to make sure our build is reproducible.*
+From the arguments, Maven knows it has to compile the Java sources and then call Jib.
 
 ```yaml
 - name: build-and-push
-image: dgageot/jib@sha256:a98d9adace11285b2344b588407cc25ac57a0ab6b55a4534b2ac97f0b0ed8609
-args: ["compile", "jib:build"]
+  image: gcr.io/cloud-builders/mvn
+  args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
 ```
 
 Once the image is built, it'll be pushed to [Google Container Registry](https://cloud.google.com/container-registry/),
-so, we are going to use the `knative-build` service account we've setup for previous tutorial.
+so, we are going to use the `knative-build` service account we've setup
+for previous tutorial.
 
 **Click the `Continue` button to run the build.**
 
 ## Run the Build
 
-TODO: Configure the image name
+Before we run the build, you need to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">spring-boot/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
+with your project name. This way, the build will push the image in
+the Google Container Registry linked to your project.
 
 Let's run the build:
 
@@ -76,7 +84,7 @@ Let's run the build:
 kubectl apply -f spring-boot/build.yaml
 ```
 
-The build is running.
+The build is running:
 
 ```bash
 kubectl get builds
@@ -96,16 +104,17 @@ logs jib
 
 ## Persist cache across builds
 
-If you run previous build a second time, you migh see that it will download files
-that it has already downloaded during the first build.
+If you run previous build a second time, you will see that it downloads lots of files
+that were already downloaded during the first build. It's because Maven is starting
+the build from the sources and nothing else.
 
 That makes the build more reproducible but also slower.
 
-It's most of the time safe to share the artifacts that Maven downloads across builds.
+Most of the, it's time safe to share the artifacts that Maven downloads across builds.
 And it usually makes a build much faster.
 
 Because Knative Build is native to Kubernetes, it can leverage [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-to share files across builds.
+to share files across builds. All we have to do is make some changes to the `build.yaml`.
 
 ### Update the Build manifest
 
@@ -125,8 +134,8 @@ spec:
  
   steps:
   - name: build-and-push
-    image: dgageot/jib@sha256:a98d9adace11285b2344b588407cc25ac57a0ab6b55a4534b2ac97f0b0ed8609
-    args: ["compile", "jib:build"]
+    image: gcr.io/cloud-builders/mvn
+    args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
     volumeMounts:
     - name: mvn-cache
       mountPath: /root/.m2
@@ -152,7 +161,7 @@ spec:
 This configuration does two things:
 
  + It creates a Persistent Volume to be shared by builds
- + It mounts this volume in `/root/.m2` during a build so that files written there will be available next time we run a build.
+ + It mounts this volume in `/root/.m2` during a build so that files written there will be available to next build.
 
 **Continue to next step, to give it a try...**
 
@@ -164,7 +173,7 @@ Let's run the build:
 kubectl apply -f spring-boot/build-cache.yaml
 ```
 
-The build is running.
+The build is running:
 
 ```bash
 kubectl get builds
@@ -176,9 +185,8 @@ Tail the logs with:
 logs jib-cache
 ```
 
-You should see the files beging downloded.
-
-Let's run the same build a second time.
+You should still see the files beging downloaded but let's
+run the same build a second time.
 
 ```bash
 kubectl delete build jib-cache
@@ -199,8 +207,13 @@ was downloaded from Maven Central!
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
-Congratulations! You've used a cache to make your builds much faster. You are an expert
-user now!
+Congratulations! You've used a cache to make your builds much faster.
+You are an expert user now!
+
+If you'd like to learn more about Knative Build, go check out the Documentation
+[here](https://github.com/knative/docs/tree/master/build).
+
+Have fun!
 
 <walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache
