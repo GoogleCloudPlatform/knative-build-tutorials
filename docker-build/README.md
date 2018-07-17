@@ -81,10 +81,10 @@ spec:
   serviceAccountName: knative-build
 ```
 
-This will done by creating a Google Cloud [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts)
-and by giving access to it to a Kubernetes [Service Account](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/).
+This will done by creating a Kubernetes [Service Account](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
+that has access to a Google Cloud [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts).
 
-**That's a lot of Service Accounts! Click the `Continue` button to understand how it works.**
+**That's a lot of Service Accounts! Click the `Continue` button to do this step by step.**
 
 ## Configure access to Google Container Registry
 
@@ -102,13 +102,7 @@ Once those steps are done, we can create as many builds as we want that will sha
 
 ## Create a Google Cloud Service Account
 
-The first part of the configuration is on the Google Cloud side. Let's configure the project
-you'd like to use.
-
-```bash
-export PROJECT_ID="[YOUR-PROJECT-ID]"
-gcloud config set project "${PROJECT_ID}"
-```
+The first part of the configuration is on the Google Cloud side.
 
 ### Create a Service Account
 
@@ -119,13 +113,13 @@ gcloud iam service-accounts create knative-build --display-name "Knative Build"
 ### Allow it to push to GCR
 
 ```bash
-gcloud projects add-iam-policy-binding ${PROJECT_ID} --member serviceAccount:knative-build@${PROJECT_ID}.iam.gserviceaccount.com --role roles/storage.admin
+gcloud projects add-iam-policy-binding {{project-id}} --member serviceAccount:knative-build@{{project-id}}.iam.gserviceaccount.com --role roles/storage.admin
 ```
 
 ### Create a JSON key
 
 ```bash
-gcloud iam service-accounts keys create knative-key.json --iam-account knative-build@${PROJECT_ID}.iam.gserviceaccount.com
+gcloud iam service-accounts keys create knative-key.json --iam-account knative-build@{{project-id}}.iam.gserviceaccount.com
 ```
 
 This creates a <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/knative-key.json">knative-key.json</walkthrough-editor-open-file> file on your drive.
@@ -174,10 +168,10 @@ secrets:
 
 ## Run the Build
 
-OK, we've got everything configured to let the Build push images.
+OK, we've got everything configured to let the Build push images to a registry.
 
 One last step is to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build.yaml">docker-build/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
-with your project name. This way, the build will push the image in
+with your project id (**{{project-id}}}**}. This way, the build will push the image to
 the Google Container Registry linked to your project.
 
 Let's run the build:
@@ -269,8 +263,8 @@ spec:
       value: gcr.io/[PROJECT-NAME]/hello-nginx
 ```
 
-*Warning: don't forget to replace `[PROJECT-NAME]` with you actual
-project name in <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build-hello.yaml"></walkthrough-editor-open-file>
+*Warning*: don't forget to replace `[PROJECT-NAME]` with you actual
+project name (**{{project-id}}**).
 
 ```bash
 kubectl apply -f docker-build/build-hello.yaml

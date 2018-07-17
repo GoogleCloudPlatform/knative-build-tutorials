@@ -13,7 +13,7 @@ Think of it as a building block to facilitate the expression of Builds as part o
 
 **What am I going to learn?**
 
-You'll learn how to install it and start using it with simple build descriptions.
+You'll learn how to install it and start using it with simple builds.
 
 You'll also learn a bit how it works underneath.
 
@@ -23,17 +23,26 @@ You'll also learn a bit how it works underneath.
 
 ## Setup
 
-*Warning: Those instructions assume you have a Kubernetes cluster and `kubectl` pointing at it.
-They also assume you have basic knowledge of Kubernetes and its CLI.*
+*Warning: Those instructions assume you have a Kubernetes cluster and `kubectl` pointing at it
+as well as a basic knowledge of Kubernetes and its CLI.*
 
-One way to check is to run:
+One way to check if kubectl is configured is to run:
 
 ```bash
 kubectl get nodes
 ```
 
-If you don't have any Kubernetes cluster, follow [this guide](https://cloud.google.com/kubernetes-engine/docs/quickstart)
-to create one with [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/).
+It should show a list of nodes.
+
+If you don't have a Kubernetes cluster, follow the instructions below:
+
+<walkthrough-tutorial-card
+  url="kubernetes-engine/docs/how-to/creating-a-cluster"
+  icon="KUBERNETES_SECTION"
+  label="gke">
+**Creating a Cluster**
+This page explains how to create a cluster on Kubernetes Engine.
+</walkthrough-tutorial-card>
 
 **Configure permissions**
 
@@ -47,7 +56,7 @@ kubectl create clusterrolebinding cluster-admin-binding \
 
 **Install Knative Build**
 
-Next, we install the latest version of [Knative Build](https://github.com/knative/serving):
+Next, we install the latest version of [Knative Build](https://github.com/knative/build):
 
 ```bash
 kubectl apply -f https://storage.googleapis.com/build-crd/latest/release.yaml
@@ -58,7 +67,7 @@ From now one, you should be good to go!
 But let's check that everything was installed correctly. That'll also help you understand which
 new components have been installed on the cluster.
 
-**Click the `Continue` button to go to next step...**
+**Click the `Continue` button to go to the next step...**
 
 ## Verify the installation
 
@@ -91,7 +100,7 @@ kubectl get build
 
 It should display `No resources found.` for now.
 
-**You are ready to run your first Build!** Click the `Continue` button.
+**You are ready to run your first Build!** Click the `Continue` button to run a simple build...
 
 ## Hello, World!
 
@@ -128,13 +137,13 @@ Our sample has only one step which uses the `busybox` image to run `echo Hello, 
 kubectl apply -f getting-started/build.yaml
 ```
 
-The build is running.
+The build is running:
 
 ```bash
 kubectl get builds
 ```
 
-**Congratulations! You've had your started your first build with Knative Build.**
+**Congratulations, you've started your first build with Knative Build!**
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
@@ -217,21 +226,12 @@ initContainers:
   - name: HOME
     value: /builder/home
   image: gcr.io/build-crd/github.com/knative/build/cmd/creds-init@sha256:a40420845b318318f6649674fc8cc1b23c7528b8be7d1a92a97508c69dac133c
-  imagePullPolicy: IfNotPresent
   name: build-step-credential-initializer
-  resources:
-    requests:
-      cpu: 100m
-  terminationMessagePath: /dev/termination-log
-  terminationMessagePolicy: File
   volumeMounts:
   - mountPath: /workspace
     name: workspace
   - mountPath: /builder/home
     name: home
-  - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-    name: default-token-5ljmf
-    readOnly: true
   workingDir: /workspace
 - args:
   - echo
@@ -240,21 +240,12 @@ initContainers:
   - name: HOME
     value: /builder/home
   image: busybox
-  imagePullPolicy: Always
   name: build-step-unnamed-1
-  resources:
-    requests:
-      cpu: 100m
-  terminationMessagePath: /dev/termination-log
-  terminationMessagePolicy: File
   volumeMounts:
   - mountPath: /workspace
     name: workspace
   - mountPath: /builder/home
     name: home
-  - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-    name: default-token-5ljmf
-    readOnly: true
   workingDir: /workspace
 ```
 
@@ -282,11 +273,8 @@ Containers all share the same two volumes:
 initContainerStatuses:
 - containerID: docker://94a639a6b16c69648989ff5c0d8eb94a54b0f6ac50f8484eed803d1f91b1123a
   image: gcr.io/build-crd/github.com/knative/build/cmd/creds-init@sha256:a40420845b318318f6649674fc8cc1b23c7528b8be7d1a92a97508c69dac133c
-  imageID: docker-pullable://gcr.io/build-crd/github.com/knative/build/cmd/creds-init@sha256:a40420845b318318f6649674fc8cc1b23c7528b8be7d1a92a97508c69dac133c
-  lastState: {}
   name: build-step-credential-initializer
   ready: true
-  restartCount: 0
   state:
     terminated:
       containerID: docker://94a639a6b16c69648989ff5c0d8eb94a54b0f6ac50f8484eed803d1f91b1123a
@@ -297,10 +285,8 @@ initContainerStatuses:
 - containerID: docker://db1de3e7032da065c7e1a9dcedf6e10372389130d0fcfb1546b1cd44749bed48
   image: busybox:latest
   imageID: docker-pullable://busybox@sha256:74f634b1bc1bd74535d5209589734efbd44a25f4e2dc96d78784576a3eb5b335
-  lastState: {}
   name: build-step-unnamed-1
   ready: true
-  restartCount: 0
   state:
     terminated:
       containerID: docker://db1de3e7032da065c7e1a9dcedf6e10372389130d0fcfb1546b1cd44749bed48
@@ -309,7 +295,6 @@ initContainerStatuses:
       reason: Completed
       startedAt: 2018-07-06T11:51:09Z
 phase: Succeeded
-
 ```
 
 That's useful to understand if the build went well or not.
@@ -350,7 +335,7 @@ logs hello
 
 That's so much easier!
 
-**Continue to next step to improve the build...**
+**Continue to next step to improve the build description...**
 
 ## Build steps can have names
 

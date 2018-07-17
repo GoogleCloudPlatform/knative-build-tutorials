@@ -18,9 +18,9 @@ from Java sources. It's easy to use it as a Knative Build step.
 
 **Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
 
-**Are you ready?** Then click the `Continue` button to get started.
+**Are you ready?** Then click the `Continue` button to get started....
 
-## Use Jib with Knative Build
+## Jib and Knative Build
 
 Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">yaml manifest</walkthrough-editor-open-file>
 to express such a build:
@@ -39,13 +39,13 @@ spec:
  
   steps:
   - name: build-and-push
-    image: dgageot/jib@sha256:a98d9adace11285b2344b588407cc25ac57a0ab6b55a4534b2ac97f0b0ed8609
-    args: ["compile", "jib:build"]
+    image: gcr.io/cloud-builders/mvn
+    args: ["compile", "jib:build", "-Dimage=gcr.io/{{project-id}}/hello-jib"]
 ```
 
-### Git source
+**Git source**
 
-Like for the previous tutorial, the build takes a git repository as an input.
+Like for the previous tutorial, the build reads the sources from a git repository.
 
 ```yaml
 source:
@@ -54,30 +54,31 @@ source:
     revision: master
 ```
 
-### Maven
+**Maven**
 
 This time, we are using [Maven](https://maven.apache.org/) to do the actual build.
 We use the `gcr.io/cloud-builders/mvn` image that is one of the Google
 [curated images](https://github.com/GoogleCloudPlatform/cloud-builders).
 
-From the arguments, Maven knows it has to compile the Java sources and then call Jib.
+From the arguments, Maven knows it has to compile the Java sources and then call Jib
+to produce a Docker image.
 
 ```yaml
 - name: build-and-push
   image: gcr.io/cloud-builders/mvn
-  args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
+  args: ["compile", "jib:build", "-Dimage=gcr.io/{{project-id}}/hello-jib"]
 ```
 
 Once the image is built, it'll be pushed to [Google Container Registry](https://cloud.google.com/container-registry/),
-so, we are going to use the `knative-build` service account we've setup
+so, we are going to reuse the `knative-build` service account we've setup
 for previous tutorial.
 
-**Click the `Continue` button to run the build.**
+**Click the `Continue` button to run the build...**
 
 ## Run the Build
 
 Before we run the build, you need to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">spring-boot/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
-with your project name. This way, the build will push the image in
+with your project name (**{{project-id}}). This way, the build will push the image to
 the Google Container Registry linked to your project.
 
 Let's run the build:
@@ -98,7 +99,7 @@ Tail the logs with:
 logs jib
 ```
 
-**Congratulations! You've had your first Java Application built with Knative Build.**
+**Congratulations! You built your first Java Application with Knative Build.**
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
@@ -106,13 +107,13 @@ logs jib
 
 ## Persist cache across builds
 
-If you run previous build a second time, you will see that it downloads lots of files
-that were already downloaded during the first build. It's because Maven is starting
+If you run the build a second time, you'll see that it downloads lots of files
+that were already downloaded the first time. It's because Maven is starting
 the build from the sources and nothing else.
 
 That makes the build more reproducible but also slower.
 
-Most of the, it's time safe to share the artifacts that Maven downloads across builds.
+Most of the time, it's safe to share the artifacts that Maven downloads across builds.
 And it usually makes a build much faster.
 
 Because Knative Build is native to Kubernetes, it can leverage [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
@@ -137,7 +138,7 @@ spec:
   steps:
   - name: build-and-push
     image: gcr.io/cloud-builders/mvn
-    args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
+    args: ["compile", "jib:build", "-Dimage=gcr.io/{{project-id}}/hello-jib"]
     volumeMounts:
     - name: mvn-cache
       mountPath: /root/.m2
