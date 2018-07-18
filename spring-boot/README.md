@@ -2,19 +2,19 @@
 
 # Knative Build - Java application
 
-The previous tutorial taught you how to build a Docker image from a Dockerfile,
-using Knative Build.
+The previous tutorial taught you how to build and push a Docker image from a Dockerfile,
+using Knative Build and Kaniko.
 
-## Build a Docker image without Docker
+Let's try something different and build a [Java Spring Boot web application](https://github.com/dgageot/hello-jib),
+without Docker. It will still produce a Docker image at the end, though.
 
-Let's try something different and build a Java Spring Boot web application,
-without using Docker. It should still produce a Docker image at the end, though.
+## What am I going to learn?
 
-To achieve that goal, we are going to use Knative Build with [Jib](https://github.com/GoogleContainerTools/jib),
-another open-source project from Google.
+ 1. You are going to use Knative Build with [Jib](https://github.com/GoogleContainerTools/jib),
+another open-source project from Google. Jib is a maven and gradle plugin that knows how to produce a Docker image
+from Java sources. It's easy to use as a Knative Build step.
 
-Jib is a maven and gradle plugin that knows how to produce a Docker image
-from Java sources. It's easy to use it as a Knative Build step.
+ 2. You will learn how to decrease the build duration by configuring a build cache.
 
 **Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
 
@@ -22,6 +22,7 @@ from Java sources. It's easy to use it as a Knative Build step.
 
 ## Jib and Knative Build
 
+<walkthrough-spotlight-pointer spotlightId="devshell-web-editor-button">Open the file editor</walkthrough-spotlight-pointer>.
 Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">yaml manifest</walkthrough-editor-open-file>
 to express such a build:
 
@@ -36,23 +37,15 @@ spec:
     git:
       url: https://github.com/dgageot/hello-jib.git
       revision: master
- 
   steps:
   - name: build-and-push
     image: gcr.io/cloud-builders/mvn
-    args: ["compile", "jib:build", "-Dimage=gcr.io/{{project-id}}/hello-jib"]
+    args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
 ```
 
 **Git source**
 
-Like for the previous tutorial, the build reads the sources from a git repository.
-
-```yaml
-source:
-  git:
-    url: https://github.com/dgageot/hello-jib.git
-    revision: master
-```
+Like for the previous tutorial, the build reads the sources from a [git repository](https://github.com/dgageot/hello-jib).
 
 **Maven**
 
@@ -66,8 +59,10 @@ to produce a Docker image.
 ```yaml
 - name: build-and-push
   image: gcr.io/cloud-builders/mvn
-  args: ["compile", "jib:build", "-Dimage=gcr.io/{{project-id}}/hello-jib"]
+  args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
 ```
+
+**Service Account**
 
 Once the image is built, it'll be pushed to [Google Container Registry](https://cloud.google.com/container-registry/),
 so, we are going to reuse the `knative-build` service account we've setup
@@ -78,8 +73,7 @@ for previous tutorial.
 ## Run the Build
 
 Before we run the build, you need to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">spring-boot/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
-with your project name (**{{project-id}}). This way, the build will push the image to
-the Google Container Registry linked to your project.
+with your project name (**{{project-id}}**).
 
 Let's run the build:
 
@@ -105,7 +99,7 @@ logs jib
 
 **Continue to next step, to improve the build file...**
 
-## Persist cache across builds
+## Clean builds are slow
 
 If you run the build a second time, you'll see that it downloads lots of files
 that were already downloaded the first time. It's because Maven is starting
@@ -116,10 +110,14 @@ That makes the build more reproducible but also slower.
 Most of the time, it's safe to share the artifacts that Maven downloads across builds.
 And it usually makes a build much faster.
 
-Because Knative Build is native to Kubernetes, it can leverage [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-to share files across builds. All we have to do is make some changes to the `build.yaml`.
+**We need a cache**
 
-### Update the Build manifest
+Because Knative Build is native to Kubernetes, it can leverage [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+to share a cache across builds. All we have to do is make some changes to the `build.yaml`.
+
+**Click the `Continue` button to configure this cache...**
+
+## Update the Build manifest
 
 We are going to use a more elaborate version of the Build manifest that looks like that:
 
@@ -138,7 +136,7 @@ spec:
   steps:
   - name: build-and-push
     image: gcr.io/cloud-builders/mvn
-    args: ["compile", "jib:build", "-Dimage=gcr.io/{{project-id}}/hello-jib"]
+    args: ["compile", "jib:build", "-Dimage=gcr.io/[PROJECT-NAME]/hello-jib"]
     volumeMounts:
     - name: mvn-cache
       mountPath: /root/.m2
@@ -168,7 +166,11 @@ This configuration does two things:
 
 **Continue to next step, to give it a try...**
 
-### Run with a cache
+## Run with a cache
+
+*Warning*: don't forget to replace `[PROJECT-NAME]` with you actual
+project name (**{{project-id}}**) in
+<walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build-cache.yaml">spring-boot/build-cache.yaml</walkthrough-editor-open-file>
 
 Let's run the build:
 
@@ -208,15 +210,17 @@ was downloaded from Maven Central!
 
 **The more dependencies your application has, the bigger the gain**
 
+## Congratulations!
+
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
-Congratulations! You've used a cache to make your builds much faster.
+Amazing! You've used a cache to make your builds much faster.
 You are an expert user now!
 
 If you'd like to learn more about Knative Build, go check out the Documentation
 [here](https://github.com/knative/docs/tree/master/build).
 
-Have fun!
+**Have fun!**
 
 <walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache

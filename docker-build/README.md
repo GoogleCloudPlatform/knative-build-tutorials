@@ -5,19 +5,25 @@
 The previous tutorial taught you how to setup Knative Build on a Kubernetes cluster. You ran a simple Build
 that prints "Hello, World!".
 
-Let's try a more concrete build!
+Let's try a more concrete build: **building a Docker image**.
 
-## Building a Docker image
+## What am I going to learn?
 
-This new tutorial, will show you how to build and push a Docker image described by a **Dockerfile**.
-The application is a simple website running with [nginx](https://www.nginx.com/).
+ 1. This new tutorial, will show you how to build and push a Docker image described by a **Dockerfile**.
+ 2. It'll show you how to extract common build configuration into a Build Template
 
 **Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
 
-**Are you ready?** Then click the `Continue` button to get started.
+**Are you ready?** Then click the `Continue` button to get started...
 
 ## Docker build with Knative Build
 
+We are going to build a very simple website with [nginx](https://www.nginx.com/).
+The sources are on [GitHub](https://github.com/dgageot/hello).
+A [Dockerfile](https://github.com/dgageot/hello/blob/master/Dockerfile)
+describes the image to be built.
+
+<walkthrough-spotlight-pointer spotlightId="devshell-web-editor-button">Open the file editor</walkthrough-spotlight-pointer>.
 Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
 
 ```yaml
@@ -38,9 +44,11 @@ spec:
            "--destination=gcr.io/[PROJECT-NAME]/hello-nginx"]
 ```
 
-A few things should look different than the simpler "Hello, World!" build.
+A few things look different than the simpler "Hello, World!" build.
 
-### Git source
+**Click the `Continue` button to understand those differences...**
+
+## Git source
 
 This time, the build will need sources to build an artifact.
 
@@ -51,40 +59,31 @@ source:
     revision: master
 ```
 
-Those sources are hosted on [GitHub](https://github.com/dgageot/hello).
-Take some time to read them. The most important file is the `Dockerfile`
-that describes the image to be built.
-
-### Kaniko
+**Kaniko**
 
 The Build will use [Kaniko](https://github.com/GoogleContainerTools/kaniko)
-to build a Docker image because [mounting the Docker socket is not safe on a
-shared Kubernetes cluster](https://github.com/kubernetes/kubernetes/issues/1806).
+to build a Docker image because just running `docker build` [is unsafe on a
+shared cluster](https://github.com/kubernetes/kubernetes/issues/1806).
 
 ```yaml
 - name: build-and-push
   image: gcr.io/kaniko-project/executor:v0.2.0
-  args: ["--dockerfile=/workspace/Dockerfile",
-          "--destination=gcr.io/[PROJECT-NAME]/hello-nginx"]
 ```
+
+**Service Account**
 
 Once the image is built, it'll be pushed to [Google Container Registry](https://cloud.google.com/container-registry/).
 Or any registry in fact, but we'll demonstrate with GCR.
-
-### Service Account
-
-Because the build pushes a Docker image to [Google Container Registry](https://cloud.google.com/container-registry/), it requires a service account
-to get the required grants.
+The build requires a service account to be granted the right to push.
 
 ```yaml
-spec:
-  serviceAccountName: knative-build
+serviceAccountName: knative-build
 ```
 
 This will done by creating a Kubernetes [Service Account](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
 that has access to a Google Cloud [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts).
 
-**That's a lot of Service Accounts! Click the `Continue` button to do this step by step.**
+**That's a lot of Service Accounts! Click the `Continue` button to do this step by step...**
 
 ## Configure access to Google Container Registry
 
@@ -92,7 +91,7 @@ Giving a Build the permisison to push to [Google Container Registry](https://clo
 requires 4 steps:
 
  + Create a [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts) in your Google Cloud project. It needs to be be granted push access to GCR.
- + Create a JSON key for that Service Account.
+ + Create a [JSON key](https://cloud.google.com/container-registry/docs/advanced-authentication#json_key_file) for that Service Account.
  + Store this key in a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/).
  + Create a Kubernetes [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts) that has access to this secret.
 
@@ -126,13 +125,13 @@ This creates a <walkthrough-editor-open-file filePath="knative-build-tutorials/d
 
 **You are almost there!** You completed the Google Cloud part.
 
-**Click the `Continue` button to complete the Kubernetes part.**
+**Click the `Continue` button to complete the Kubernetes part...**
 
 ## Create a Kubernetes Service Account
 
 ### Create a secret for the JSON Key
 
-First, we create a Kubernetes secret from the JSON key file:
+First, create a Kubernetes secret from the JSON key:
 
 ```bash
 kubectl create secret generic knative-build-auth --type="kubernetes.io/basic-auth" --from-literal=username="_json_key" --from-file=password=knative-key.json
@@ -147,21 +146,10 @@ kubectl annotate secret knative-build-auth build.knative.dev/docker-0=https://gc
 
 ### Create a Service Account
 
-We can eventually create a Service Account in Kubernetes with:
+We can eventually create a Service Account in Kubernetes:
 
 ```bash
 kubectl apply -f docker-build/service-account.yaml
-```
-
-The Service Acccount looks like that:
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: knative-build
-secrets:
-- name: knative-build-auth
 ```
 
 **You are done! Continue to next step to run the build...**
@@ -170,11 +158,11 @@ secrets:
 
 OK, we've got everything configured to let the Build push images to a registry.
 
-One last step is to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build.yaml">docker-build/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
-with your project id (**{{project-id}}}**}. This way, the build will push the image to
-the Google Container Registry linked to your project.
+One last step is to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build.yaml">docker-build/build.yaml</walkthrough-editor-open-file>
+and replace `[PROJECT-NAME]` with your project id (**{{project-id}}**).
+This way, the build will push the image to the Google Container Registry linked to your project.
 
-Let's run the build:
+Run the build:
 
 ```bash
 kubectl apply -f docker-build/build.yaml
@@ -192,7 +180,7 @@ Tail the logs with:
 logs docker-build
 ```
 
-**Congratulations! You've have built a Docker image with Knative Build.**
+**Congratulations! You have built a Docker image with Knative Build.**
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
@@ -207,7 +195,7 @@ image needs to be built.
 [Build Templates](https://github.com/knative/docs/blob/master/build/build-templates.md)
 solve that problem by extracting the common yaml to a shared parameterized template.
 
-### Create a Build Template
+### Create a Template
 
 A Build Template for a Docker build looks like that:
 
@@ -222,7 +210,7 @@ spec:
     description: Where to publish the resulting image.
   - name: DIRECTORY
     description: The directory containing the build context.
-    default: /workspace
+    default: "/workspace"
   - name: DOCKERFILE_NAME
     description: The name of the Dockerfile
     default: Dockerfile
@@ -241,6 +229,8 @@ Let's register this template into Kubernetes.
 ```bash
 kubectl apply -f docker-build/template.yaml
 ```
+
+### Use the Template
 
 Now, the Build can be simplified by referencing the template and by
 providing the right values for each parameter.
@@ -263,16 +253,33 @@ spec:
       value: gcr.io/[PROJECT-NAME]/hello-nginx
 ```
 
+**Click the `Continue` button to run the templated build...**
+
+## Run the Templated Build
+
 *Warning*: don't forget to replace `[PROJECT-NAME]` with you actual
-project name (**{{project-id}}**).
+project name (**{{project-id}}**) in
+<walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build-hello.yaml">docker-build/build-hello.yaml</walkthrough-editor-open-file>
+
+Run the build:
 
 ```bash
 kubectl apply -f docker-build/build-hello.yaml
 ```
 
+The build is running:
+
+```bash
+kubectl get builds
+```
+
+Tail the logs with:
+
 ```bash
 logs docker-build-hello
 ```
+
+## Congratulations!
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
