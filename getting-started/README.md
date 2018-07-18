@@ -13,7 +13,7 @@ Think of it as a building block to facilitate the expression of Builds as part o
 
 **What am I going to learn?**
 
-You'll learn how to install it and start using it with simple builds.
+You'll learn how to install Knative Build and start using it with simple builds.
 
 You'll also learn a bit how it works underneath.
 
