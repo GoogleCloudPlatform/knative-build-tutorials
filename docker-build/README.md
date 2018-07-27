@@ -1,4 +1,4 @@
-<walkthrough-author name="David Gageot" repositoryUrl="https://github.com/GoogleContainerTools/knative-build-tutorials" email="dgageot@google.com" tutorialName="knative-build-docker-build"></walkthrough-author>
+<walkthrough-author name="David Gageot" repositoryUrl="https://github.com/GoogleCloudPlatform/knative-build-tutorials" email="dgageot@google.com" tutorialName="knative-build-docker-build"></walkthrough-author>
 
 # Knative Build - Docker build
 

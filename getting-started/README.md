@@ -1,3 +1,5 @@
+<walkthrough-author name="David Gageot" repositoryUrl="https://github.com/GoogleCloudPlatform/knative-build-tutorials" email="dgageot@google.com" tutorialName="knative-build-getting-started"></walkthrough-author>
+
 # Knative Build - Getting started
 
 Welcome! This tutorial will help you get started with [Knative Build](https://github.com/knative/build) extension to Kubernetes.
