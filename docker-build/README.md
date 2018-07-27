@@ -40,7 +40,7 @@ spec:
       revision: master
   steps:
   - name: build-and-push
-    image: gcr.io/kaniko-project/executor:v0.2.0
+    image: gcr.io/kaniko-project/executor:v0.1.0
     args:
     - --dockerfile=/workspace/Dockerfile
     - --destination=gcr.io/[PROJECT-NAME]/hello-nginx
@@ -70,7 +70,7 @@ shared cluster](https://github.com/kubernetes/kubernetes/issues/1806).
 
 ```yaml
 - name: build-and-push
-  image: gcr.io/kaniko-project/executor:v0.2.0
+  image: gcr.io/kaniko-project/executor:v0.1.0
 ```
 
 **Service Account**
@@ -230,7 +230,7 @@ spec:
     default: Dockerfile
   steps:
   - name: build-and-push
-    image: gcr.io/kaniko-project/executor:v0.2.0
+    image: gcr.io/kaniko-project/executor:v0.1.0
     args:
     - --dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}
     - --destination=${IMAGE}

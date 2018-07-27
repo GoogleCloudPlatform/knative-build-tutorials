@@ -27,7 +27,7 @@ spec:
     default: Dockerfile
   steps:
   - name: build-and-push
-    image: gcr.io/kaniko-project/executor:v0.2.0
+    image: gcr.io/kaniko-project/executor:v0.1.0
     args:
     - --dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}
     - --destination=${IMAGE}
