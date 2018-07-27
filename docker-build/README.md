@@ -9,12 +9,15 @@ Let's try a more concrete build: **building a Docker image**.
 
 ## What am I going to learn?
 
- 1. This new tutorial, will show you how to build and push a Docker image described by a **Dockerfile**.
- 2. It'll show you how to extract common build configuration into a Build Template
+ 1. This new tutorial, will show you how to build a Docker image described by a **Dockerfile**.
+ 2. You'll setup credentials to push that image to a registry.
+ 2. It'll show you how to extract common build configuration into a Build Template.
+
+**Time to complete:** <walkthrough-tutorial-duration duration="10"></walkthrough-tutorial-duration>
 
 **Are you ready?** Then click the `Continue` button to get started...
 
-## Docker build with Knative Build
+## Build a Docker image
 
 We are going to build a very simple website with [nginx](https://www.nginx.com/).
 The sources are on [GitHub](https://github.com/dgageot/hello).
@@ -22,7 +25,7 @@ A [Dockerfile](https://github.com/dgageot/hello/blob/master/Dockerfile)
 describes the image to be built.
 
 <walkthrough-spotlight-pointer spotlightId="devshell-web-editor-button">Open the file editor</walkthrough-spotlight-pointer>.
-Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/getting-started/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
+Here's the Kubernetes <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build.yaml">yaml manifest</walkthrough-editor-open-file> to express such a build:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
@@ -42,13 +45,14 @@ spec:
            "--destination=gcr.io/[PROJECT-NAME]/hello-nginx"]
 ```
 
-A few things look different than the simpler "Hello, World!" build.
+A few things look different than the simpler "Hello, World!" build, right?
 
 **Click the `Continue` button to understand those differences...**
 
 ## Git source
 
-This time, the build will need sources to build an artifact.
+This time, the build will need sources to build an artifact. So we define
+a source where to get those sources from:
 
 ```yaml
 source:
@@ -59,8 +63,8 @@ source:
 
 **Kaniko**
 
-The Build will use [Kaniko](https://github.com/GoogleContainerTools/kaniko)
-to build a Docker image because just running `docker build` [is unsafe on a
+[Kaniko](https://github.com/GoogleContainerTools/kaniko) will be used
+to build a Docker image. Just running `docker build` [would be unsafe on a
 shared cluster](https://github.com/kubernetes/kubernetes/issues/1806).
 
 ```yaml
@@ -78,7 +82,7 @@ The build requires a service account to be granted the right to push.
 serviceAccountName: knative-build
 ```
 
-This will done by creating a Kubernetes [Service Account](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
+This will be done by creating a Kubernetes [Service Account](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
 that has access to a Google Cloud [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts).
 
 **That's a lot of Service Accounts! Click the `Continue` button to do this step by step...**
@@ -93,13 +97,23 @@ requires 4 steps:
  + Store this key in a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/).
  + Create a Kubernetes [Service Account](https://cloud.google.com/iam/docs/understanding-service-accounts) that has access to this secret.
 
-Once those steps are done, we can create as many builds as we want that will share those permissions.
+Once those steps are done, we can create as many builds as we want that share those permissions.
 
 **Click the `Continue` button to follow those steps...**
 
 ## Create a Google Cloud Service Account
 
 The first part of the configuration is on the Google Cloud side.
+
+### Make sure gcloud CLI talks to the right project
+
+```bash
+gcloud config set project [YOUR_PROJECTID]
+```
+
+```bash
+PROJECTID=$(gcloud config get-value project)
+```
 
 ### Create a Service Account
 
@@ -110,16 +124,16 @@ gcloud iam service-accounts create knative-build --display-name "Knative Build"
 ### Allow it to push to GCR
 
 ```bash
-gcloud projects add-iam-policy-binding {{project-id}} --member serviceAccount:knative-build@{{project-id}}.iam.gserviceaccount.com --role roles/storage.admin
+gcloud projects add-iam-policy-binding $PROJECTID --member serviceAccount:knative-build@$PROJECTID.iam.gserviceaccount.com --role roles/storage.admin
 ```
 
 ### Create a JSON key
 
 ```bash
-gcloud iam service-accounts keys create knative-key.json --iam-account knative-build@{{project-id}}.iam.gserviceaccount.com
+gcloud iam service-accounts keys create knative-key.json --iam-account knative-build@$PROJECTID.iam.gserviceaccount.com
 ```
 
-This creates a <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/knative-key.json">knative-key.json</walkthrough-editor-open-file> file on your drive.
+This creates a <walkthrough-editor-open-file filePath="knative-build-tutorials/knative-key.json">knative-key.json</walkthrough-editor-open-file> file on your drive.
 
 **You are almost there!** You completed the Google Cloud part.
 
@@ -178,7 +192,7 @@ Tail the logs with:
 logs docker-build
 ```
 
-**Congratulations! You have built a Docker image with Knative Build.**
+**Congratulations! You have built and pushed a Docker image with Knative Build.**
 
 <walkthrough-conclusion-trophy></walkthrough-conclusion-trophy>
 
