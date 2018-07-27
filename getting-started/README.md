@@ -17,8 +17,9 @@ Think of it as a building block to facilitate the expression of Builds as part o
 
 **What am I going to learn?**
 
- 1. You'll learn how to install Knative Build and start using it with simple builds.
- 2. You'll also learn a bit how it works underneath.
+ 1. You'll learn how to install Knative Build.
+ 2. You'll run a simple build.
+ 3. You'll also learn a bit how it works underneath.
 
 **Time to complete:** <walkthrough-tutorial-duration duration="10"></walkthrough-tutorial-duration>
 
