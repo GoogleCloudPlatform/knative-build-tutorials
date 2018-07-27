@@ -16,6 +16,8 @@ from Java sources. It's easy to use as a Knative Build step.
 
  2. You will learn how to decrease the build duration by configuring a build cache.
 
+**Time to complete:** <walkthrough-tutorial-duration duration="5"></walkthrough-tutorial-duration>
+
 **Are you ready?** Then click the `Continue` button to get started....
 
 ## Jib and Knative Build
@@ -71,7 +73,7 @@ for previous tutorial.
 ## Run the Build
 
 Before we run the build, you need to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build.yaml">spring-boot/build.yaml</walkthrough-editor-open-file> and replace `[PROJECT-NAME]`
-with your project name (**{{project-id}}**).
+with your project name.
 
 Let's run the build:
 
@@ -167,7 +169,7 @@ This configuration does two things:
 ## Run with a cache
 
 *Warning*: don't forget to replace `[PROJECT-NAME]` with you actual
-project name (**{{project-id}}**) in
+project name in
 <walkthrough-editor-open-file filePath="knative-build-tutorials/spring-boot/build-cache.yaml">spring-boot/build-cache.yaml</walkthrough-editor-open-file>
 
 Let's run the build:
@@ -188,7 +190,7 @@ Tail the logs with:
 logs jib-cache
 ```
 
-You should still see the files beging downloaded but let's
+You should still see the files being downloaded but let's
 run the same build a second time.
 
 ```bash
@@ -206,7 +208,7 @@ logs jib-cache
 Now, the build should be a bit faster and you see in the logs that no file
 was downloaded from Maven Central!
 
-**The more dependencies your application has, the bigger the gain**
+**The more dependencies your application has, the bigger the gain.**
 
 ## Congratulations!
 
@@ -215,7 +217,7 @@ was downloaded from Maven Central!
 Amazing! You've used a cache to make your builds much faster.
 You are an expert user now!
 
-If you'd like to learn more about Knative Build, go check out the Documentation
+If you'd like to learn more about Knative Build, go check out the documentation
 [here](https://github.com/knative/docs/tree/master/build).
 
 **Have fun!**

@@ -24,5 +24,6 @@ spec:
   steps:
   - name: build-and-push
     image: gcr.io/kaniko-project/executor:v0.2.0
-    args: ["--dockerfile=/workspace/Dockerfile",
-           "--destination=gcr.io/[PROJECT-NAME]/hello-nginx"]
+    args:
+    - --dockerfile=/workspace/Dockerfile
+    - --destination=gcr.io/[PROJECT-NAME]/hello-nginx

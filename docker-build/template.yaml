@@ -28,5 +28,6 @@ spec:
   steps:
   - name: build-and-push
     image: gcr.io/kaniko-project/executor:v0.2.0
-    args: ["--dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}",
-           "--destination=${IMAGE}"]
+    args:
+    - --dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}
+    - --destination=${IMAGE}

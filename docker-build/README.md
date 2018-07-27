@@ -41,8 +41,9 @@ spec:
   steps:
   - name: build-and-push
     image: gcr.io/kaniko-project/executor:v0.2.0
-    args: ["--dockerfile=/workspace/Dockerfile",
-           "--destination=gcr.io/[PROJECT-NAME]/hello-nginx"]
+    args:
+    - --dockerfile=/workspace/Dockerfile
+    - --destination=gcr.io/[PROJECT-NAME]/hello-nginx
 ```
 
 A few things look different than the simpler "Hello, World!" build, right?
@@ -171,7 +172,7 @@ kubectl apply -f docker-build/service-account.yaml
 OK, we've got everything configured to let the Build push images to a registry.
 
 One last step is to edit <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build.yaml">docker-build/build.yaml</walkthrough-editor-open-file>
-and replace `[PROJECT-NAME]` with your project id (**{{project-id}}**).
+and replace `[PROJECT-NAME]` with your project id.
 This way, the build will push the image to the Google Container Registry linked to your project.
 
 Run the build:
@@ -230,8 +231,9 @@ spec:
   steps:
   - name: build-and-push
     image: gcr.io/kaniko-project/executor:v0.2.0
-    args: ["--dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}",
-           "--destination=${IMAGE}"]
+    args:
+    - --dockerfile=/${DIRECTORY}/{DOCKERFILE_NAME}
+    - --destination=${IMAGE}
 ```
 
 It's a list of steps and a list of parameters, some of which have default
@@ -271,7 +273,7 @@ spec:
 ## Run the Templated Build
 
 *Warning*: don't forget to replace `[PROJECT-NAME]` with you actual
-project name (**{{project-id}}**) in
+project name in
 <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/build-hello.yaml">docker-build/build-hello.yaml</walkthrough-editor-open-file>
 
 Run the build:
@@ -301,7 +303,7 @@ user now!
 
 **Why not build a more complicated Java application?**
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleContainerTools%2Fknative-build-tutorials&page=editor&tutorial=spring-boot/README.md&open_in_editor=.)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fknative-build-tutorials&page=editor&tutorial=spring-boot/README.md&open_in_editor=.)
 
 <walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache

@@ -386,7 +386,7 @@ logs hello
 
 **Why not build a Docker image from a Dockerfile now?**
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleContainerTools%2Fknative-build-tutorials&page=editor&tutorial=docker-build/README.md&open_in_editor=.)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fknative-build-tutorials&page=editor&tutorial=docker-build/README.md&open_in_editor=.)
 
 <walkthrough-footnote>
 Copyright 2018 Google LLC All Rights Reserved. Licensed under the Apache
