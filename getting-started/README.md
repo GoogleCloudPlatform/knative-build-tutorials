@@ -20,6 +20,8 @@ Think of it as a building block to facilitate the expression of Builds as part o
  1. You'll learn how to install Knative Build and start using it with simple builds.
  2. You'll also learn a bit how it works underneath.
 
+**Time to complete:** <walkthrough-tutorial-duration duration="10"></walkthrough-tutorial-duration>
+
 **Are you ready?** Click the `Continue` button to get started...
 
 ## Setup Kubernetes
@@ -250,7 +252,7 @@ initContainers:
 
 **Build steps run in containers:**
 
-We can see that the pod ran two [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) in sequential order.
+We can see that the pod ran two [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) in sequential order:
 
  + One to initialize the credentials. More on that later.
  + One to actually run the only step of our build.
@@ -304,10 +306,15 @@ It's possible to read the logs for each step with the usual `kubectl logs` comma
 For example:
 
 ```bash
-kubectl logs $(kubectl get build hello -ojsonpath={.status.cluster.podName}) -c build-step-unnamed-1
+kubectl logs -f $(kubectl get build hello -ojsonpath={.status.cluster.podName}) -c build-step-unnamed-1
 ```
 
-It should show `Hello, World!`
+It should show `Hello, World!`.
+
+**It takes a lot of time!**
+
+*Only the first build will be long to start because Knative needs to pull some Docker images that
+are used by each build. Once those images are pulled, the builds will be much faster.*
 
 **I see no logs!**
 
@@ -363,7 +370,7 @@ kubectl delete build hello
 ...and start a fresh one.
 
 ```bash
-kubectl apply -f build.yaml
+kubectl apply -f getting-started/build.yaml
 ```
 
 The logs are easy to tail:
