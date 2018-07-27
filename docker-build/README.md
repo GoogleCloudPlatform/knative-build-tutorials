@@ -209,7 +209,8 @@ solve that problem by extracting the common yaml to a shared parameterized templ
 
 ### Create a Template
 
-A Build Template for a Docker build looks like that:
+A <walkthrough-editor-open-file filePath="knative-build-tutorials/docker-build/template.yaml">Build Template</walkthrough-editor-open-file>
+for a Docker build looks like that:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
