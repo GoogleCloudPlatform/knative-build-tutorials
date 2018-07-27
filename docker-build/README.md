@@ -12,8 +12,6 @@ Let's try a more concrete build: **building a Docker image**.
  1. This new tutorial, will show you how to build and push a Docker image described by a **Dockerfile**.
  2. It'll show you how to extract common build configuration into a Build Template
 
-**Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
-
 **Are you ready?** Then click the `Continue` button to get started...
 
 ## Docker build with Knative Build

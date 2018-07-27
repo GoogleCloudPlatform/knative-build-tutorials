@@ -18,8 +18,6 @@ Think of it as a building block to facilitate the expression of Builds as part o
  1. You'll learn how to install Knative Build and start using it with simple builds.
  2. You'll also learn a bit how it works underneath.
 
-**Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
-
 **Are you ready?** Click the `Continue` button to get started...
 
 ## Setup Kubernetes

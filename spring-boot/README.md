@@ -16,8 +16,6 @@ from Java sources. It's easy to use as a Knative Build step.
 
  2. You will learn how to decrease the build duration by configuring a build cache.
 
-**Time to complete:** <walkthrough-tutorial-duration duration="TODO"></walkthrough-tutorial-duration>
-
 **Are you ready?** Then click the `Continue` button to get started....
 
 ## Jib and Knative Build
